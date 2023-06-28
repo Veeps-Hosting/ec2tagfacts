@@ -18,11 +18,11 @@
 #   awscli must be installed by other means.
 #
 # [*enable_epel*]
-#   True to enable EPEL automatically, false not to. Automatically set in 
+#   True to enable EPEL automatically, false not to. Automatically set in
 #   ec2tagfacts::params based on OS family.
 #
 # [*pippkg*]
-#   Set in ec2tagfacts::params, this is the Python pip package name by OS 
+#   Set in ec2tagfacts::params, this is the Python pip package name by OS
 #   family. False disables python pip package management.
 #
 # [*awscli*]
@@ -64,56 +64,39 @@
 # Copyright 2015 Bryan Andrews, unless otherwise noted.
 #
 class ec2tagfacts (
-
-  $aws_access_key_id      = undef,  # if undef we assume they are setup correctly already
-  $aws_secret_access_key  = undef,
-  $aws_cli_ini_settings   = $ec2tagfacts::params::aws_cli_ini_settings,
-  $manage_awscli          = true,
-  $enable_epel            = $ec2tagfacts::params::enable_epel,
-  $pippkg                 = $ec2tagfacts::params::pippkg,
-  $awscli                 = $ec2tagfacts::params::awscli,
-  $rubyjsonpkg            = $ec2tagfacts::params::rubyjsonpkg,
-  $awscli_pkg             = $ec2tagfacts::params::awscli_pkg,
-
+Optional[String]                                   $aws_access_key_id     = undef,
+Optional[String]                                   $aws_secret_access_key = undef,
+String                                             $aws_cli_ini_settings  = $ec2tagfacts::params::aws_cli_ini_settings,
+Boolean                                            $manage_awscli         = true,
+Boolean                                            $enable_epel           = $ec2tagfacts::params::enable_epel,
+                                                   $pippkg                = $ec2tagfacts::params::pippkg,
+String                                             $awscli                = $ec2tagfacts::params::awscli,
+String                                             $rubyjsonpkg           = $ec2tagfacts::params::rubyjsonpkg,
+Variant[String, Enum['apt','pip','portage','yum']] $awscli_pkg            = $ec2tagfacts::params::awscli_pkg,
 ) inherits ec2tagfacts::params {
 
-
-  if (!is_string($aws_access_key_id)) {
-    fail('ERROR: ec2tagfacts::aws_access_key_id must be a string')
-  }
-
-  if (!is_string($aws_secret_access_key)) {
-    fail('ERROR: ec2tagfacts::aws_secret_access_key must be a string')
-  }
-
-  if $manage_awscli {
-    if $enable_epel {
+  if $manage_awscli == true {
+    if $enable_epel == true {
       include ::epel
     }
 
     if $pippkg != false {
-
-      if $enable_epel {
+      if $enable_epel == true {
         Class['epel'] -> Package[$pippkg]
       }
-
       package { $pippkg:
         ensure => 'installed',
       }
-
       package { $awscli:
         ensure   => 'installed',
         provider => $awscli_pkg,
         require  => Package[$pippkg],
       }
-
     } else {
-
       package { $awscli:
         ensure   => 'installed',
         provider => $awscli_pkg,
       }
-
     }
   }
 
@@ -125,7 +108,6 @@ class ec2tagfacts (
   }
 
   if ($aws_secret_access_key != undef) and ($aws_access_key_id != undef) {
-
     $directory = dirname($aws_cli_ini_settings)
     file { $directory:
       ensure  => directory,
@@ -148,7 +130,5 @@ class ec2tagfacts (
       value   => $aws_secret_access_key,
       require => File[$directory],
     }
-
   }
-
 }
