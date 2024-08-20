@@ -38,7 +38,7 @@ class ec2tagfacts::params {
 
   $aws_cli_ini_settings = '/root/.aws/credentials'
 
-  case $::operatingsystem {
+  case "${facts['os']['name']}" {
     'CentOS', 'RedHat' , 'OEL', 'OracleLinux': {
       $awscli       = 'awscli'
       $enable_epel  = true
