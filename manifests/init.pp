@@ -64,15 +64,15 @@
 # Copyright 2015 Bryan Andrews, unless otherwise noted.
 #
 class ec2tagfacts (
-Optional[String]                                   $aws_access_key_id     = undef,
-Optional[String]                                   $aws_secret_access_key = undef,
-String                                             $aws_cli_ini_settings  = $ec2tagfacts::params::aws_cli_ini_settings,
-Boolean                                            $manage_awscli         = true,
-Boolean                                            $enable_epel           = $ec2tagfacts::params::enable_epel,
-                                                   $pippkg                = $ec2tagfacts::params::pippkg,
-String                                             $awscli                = $ec2tagfacts::params::awscli,
-String                                             $rubyjsonpkg           = $ec2tagfacts::params::rubyjsonpkg,
-Variant[String, Enum['apt','pip','portage','yum']] $awscli_pkg            = $ec2tagfacts::params::awscli_pkg,
+Optional[String]                                          $aws_access_key_id     = undef,
+Optional[String]                                          $aws_secret_access_key = undef,
+String                                                    $aws_cli_ini_settings  = $ec2tagfacts::params::aws_cli_ini_settings,
+Boolean                                                   $manage_awscli         = true,
+Boolean                                                   $enable_epel           = $ec2tagfacts::params::enable_epel,
+                                                          $pippkg                = $ec2tagfacts::params::pippkg,
+String                                                    $awscli                = $ec2tagfacts::params::awscli,
+String                                                    $rubyjsonpkg           = $ec2tagfacts::params::rubyjsonpkg,
+Variant[String, Enum['apt','pip','portage','snap','yum']] $awscli_pkg            = $ec2tagfacts::params::awscli_pkg,
 ) inherits ec2tagfacts::params {
 
   if $manage_awscli == true {

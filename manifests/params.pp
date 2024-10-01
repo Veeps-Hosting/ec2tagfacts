@@ -42,8 +42,8 @@ class ec2tagfacts::params {
     'CentOS', 'RedHat' , 'OEL', 'OracleLinux': {
       $awscli       = 'awscli'
       $enable_epel  = true
-      if ($::operatingsystemmajrelease + 0) >= (7 + 0) {
-        $pippkg       = false # centos7 has awscli in epel as an rpm
+      if Float("${facts[os][release][major]}") >= 7 {
+       $pippkg       = false # centos7 has awscli in epel as an rpm
         $rubyjsonpkg  = 'rubygem-json'
         $awscli_pkg   = 'yum' # package provider for centos7
       } else {
@@ -55,7 +55,7 @@ class ec2tagfacts::params {
     'Fedora': {
       $awscli       = 'awscli'
       $enable_epel  = true
-      if ($::operatingsystemmajrelease + 0) >= (22 + 0) {
+      if Float("${facts[os][release][major]}") >= 22 {
         $pippkg       = false
         $rubyjsonpkg  = 'rubygem-json'
         $awscli_pkg   = 'yum'
@@ -81,7 +81,7 @@ class ec2tagfacts::params {
     }
     'Amazon': {
       # Test for Amazon Linux 2
-      if $::kernelrelease =~ /.*amzn2.*/ {
+      if "${facts['kernelrelease']}" =~ /.*amzn2.*/ {
         $rubyjsonpkg  = 'rubygem-json'
         $pippkg       = 'python2-pip'
         $awscli       = 'awscli'
@@ -95,11 +95,19 @@ class ec2tagfacts::params {
       }
     }
     'ubuntu', 'debian': {
-      $pippkg       = false
-      $rubyjsonpkg  = 'ruby-json'
-      $awscli       = 'awscli'
-      $enable_epel  = false
-      $awscli_pkg   = 'apt'
+      if Float("${facts[os][release][major]}") >= 24.04 {
+        $pippkg       = false
+        $rubyjsonpkg  = 'ruby-json'
+        $awscli       = 'aws-cli'
+        $enable_epel  = false
+        $awscli_pkg   = 'snap'
+      } else {
+        $pippkg       = false
+        $rubyjsonpkg  = 'ruby-json'
+        $awscli       = 'awscli'
+        $enable_epel  = false
+        $awscli_pkg   = 'apt'
+      }
     }
     'SLES', 'SLED', 'OpenSuSE', 'SuSE': {
       $pippkg       = 'python-pip'
@@ -109,7 +117,7 @@ class ec2tagfacts::params {
       $awscli_pkg   = 'pip'
     }
     default: {
-      fail("Unsupported platform: ${::osfamily}/${::operatingsystem}")
+      fail("Unsupported platform: ${facts[os][distro][description]}")
     }
   }
 

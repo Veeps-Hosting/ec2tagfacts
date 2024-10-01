@@ -1,6 +1,6 @@
 {
   "name": "veepshosting-ec2tagfacts",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "Grant Davies",
   "summary": "AWS EC2 tags exported as puppet facts and AWS cli tool installed.",
   "license": "Apache-2.0",
@@ -19,6 +19,10 @@
     {
       "name": "stahnma/epel",
       "version_requirement": ">= 1.0.2"
+    },
+    {
+      "name": "ethanhs/snapd",
+      "version_requirement": ">= 1.4.0"
     }
   ],
   "operatingsystem_support": [
@@ -86,7 +90,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "20.04",
-        "22.04"
+        "22.04",
+        "24.04"
       ]
     }
   ],
